@@ -10,6 +10,7 @@ def read_links(filename):
     """Read link pairs (source_URL, URL) from a file."""
     with open(filename, 'r') as f:
         links = []
+        urls = set()
         for line in f:
             curr_line = line.strip().split()
             # account for the weird urls with spaces in them by combining them if there are more than 0 spaced words after the second url per pair
@@ -17,9 +18,17 @@ def read_links(filename):
                 for i in range(2, len(curr_line)):
                     curr_line[1] += curr_line[i]
                 links.append((curr_line[0], curr_line[1]))
+                if curr_line[0] not in urls:
+                    urls.add(curr_line[0])
+                if curr_line[1] not in urls:
+                    urls.add(curr_line[1])
             else:
                 links.append(tuple(curr_line))
-    return links
+                if curr_line[0] not in urls:
+                    urls.add(curr_line[0])
+                if curr_line[1] not in urls:
+                    urls.add(curr_line[1])
+    return (links, urls)
 
 def calculate_pagerank(urls, links, convergence_threshold, damping_factor=0.85):
     # Default 0.25 starting scores
@@ -52,7 +61,7 @@ def calculate_pagerank(urls, links, convergence_threshold, damping_factor=0.85):
 
         prev_pagerank = pagerank.copy()
         count += 1
-    print(count)
+    print(f"Rounds to converge: {count}")
     return pagerank
 
 def write_pagerank(filename, pagerank):
@@ -62,18 +71,18 @@ def write_pagerank(filename, pagerank):
             f.write(f"{url} {score}\n")
 
 if __name__ == "__main__":
-    if len(sys.argv) != 4:
-        print("Usage: python pagerank.py <urls_file> <links_file> <convergence_threshold>")
+    if len(sys.argv) != 3:
+        print("Usage: python pagerank.py <links_file> <convergence_threshold>")
         sys.exit(1)
 
-    urls_file = sys.argv[1]
-    links_file = sys.argv[2]
-    convergence_threshold = float(sys.argv[3])
+    # urls_file = sys.argv[1]
+    links_file = sys.argv[1]
+    convergence_threshold = float(sys.argv[2])
 
     # list of urls
-    urls = read_urls(urls_file)
+    # urls = read_urls(urls_file)
     # list of tuples (source, target)
-    links = read_links(links_file)
+    links, urls = read_links(links_file)
 
     pagerank = calculate_pagerank(urls, links, convergence_threshold)
 
