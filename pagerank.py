@@ -71,19 +71,20 @@ def write_pagerank(filename, pagerank):
             f.write(f"{url} {score}\n")
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print("Usage: python pagerank.py <links_file> <convergence_threshold>")
+    if len(sys.argv) != 4:
+        print("Usage: python pagerank.py <links_file> <d> <convergence_threshold>")
         sys.exit(1)
 
     # urls_file = sys.argv[1]
     links_file = sys.argv[1]
-    convergence_threshold = float(sys.argv[2])
+    damping_factor = sys.argv[2]
+    convergence_threshold = float(sys.argv[3])
 
     # list of urls
     # urls = read_urls(urls_file)
     # list of tuples (source, target)
     links, urls = read_links(links_file)
 
-    pagerank = calculate_pagerank(urls, links, convergence_threshold)
+    pagerank = calculate_pagerank(urls, links, convergence_threshold, damping_factor=damping_factor)
 
     write_pagerank("pagerank.output", pagerank)
