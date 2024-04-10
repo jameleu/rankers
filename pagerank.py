@@ -77,6 +77,7 @@ if __name__ == "__main__":
     links_file = sys.argv[1]
     damping_factor = float(sys.argv[2])
     convergence_threshold = float(sys.argv[3])
+    max_iterations = int(sys.argv[4])
 
     # list of urls
     # urls = read_urls(urls_file)
