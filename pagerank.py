@@ -30,19 +30,17 @@ def read_links(filename):
                     urls.add(curr_line[1])
     return (links, urls)
 
-def calculate_pagerank(urls, links, convergence_threshold, damping_factor=0.85):
+def calculate_pagerank(urls, links, convergence_threshold, max_iterations, damping_factor=0.85):
     # Default 0.25 starting scores
     pagerank = {url: 0.25 for url in urls}
     prev_pagerank = pagerank.copy()  # basically starts at default scores, too; need separate because are modifying pagerank with each url and want last round's info, not curr
     N = len(urls)
     # get outbound links count
     outbound_links_count = defaultdict(int)
-    for url in urls:
-        for source, target in links:
-            if source == url:
-                outbound_links_count[url] += 1
+    for source, target in links:
+        outbound_links_count[source] += 1
     count = 0
-    while True:
+    while count < max_iterations:
         for url in urls:
             # for each predecessor (j of IN(v_i)), add score / its outgoing links to sum  (ingoing means coming to curr url, so target is curr url)
             predecessor_sum_score = sum(prev_pagerank[source] / outbound_links_count[source] for source, target in links if target == url and outbound_links_count[source] != 0)
@@ -71,13 +69,13 @@ def write_pagerank(filename, pagerank):
             f.write(f"{url} {score}\n")
 
 if __name__ == "__main__":
-    if len(sys.argv) != 4:
-        print("Usage: python pagerank.py <links_file> <d> <convergence_threshold>")
+    if len(sys.argv) != 5:
+        print("Usage: python pagerank.py <links_file> <d> <convergence_threshold> <max_iterations>")
         sys.exit(1)
 
     # urls_file = sys.argv[1]
     links_file = sys.argv[1]
-    damping_factor = sys.argv[2]
+    damping_factor = float(sys.argv[2])
     convergence_threshold = float(sys.argv[3])
 
     # list of urls
@@ -85,6 +83,6 @@ if __name__ == "__main__":
     # list of tuples (source, target)
     links, urls = read_links(links_file)
 
-    pagerank = calculate_pagerank(urls, links, convergence_threshold, damping_factor=damping_factor)
+    pagerank = calculate_pagerank(urls, links, convergence_threshold, max_iterations, damping_factor=damping_factor)
 
     write_pagerank("pagerank.output", pagerank)
