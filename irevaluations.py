@@ -9,7 +9,15 @@ def fscore(beta, retrieved_docs, relevant_docs):
     precision = tp / len(retrieved)
     recall = tp / len(relevant)
 
-    return (1 + (beta ** 2)) / (((beta ** 2) / recall) + (1 / precision))
+    result = (1 + (beta ** 2)) / (((beta ** 2) / recall) + (1 / precision))
+
+    print(f"Retrieved and relevant: {tp} docs - {retrieved.intersection(relevant)}")
+    print(f"Precision = {tp} / {len(retrieved)} = {round(precision, 3)}")
+    print(f"Recall = {tp} / {len(relevant)} = {round(recall, 3)}")
+    print(f"F({beta}) score = (1 + ({beta} ^ 2)) / ((({beta} ^ 2) / {round(recall, 3)}) "
+          f"+ (1 / {round(precision, 3)})) = {round(result, 3)}\n")
+
+    return result
 
 
 def kendalls_tau(ideal, candidate):
@@ -45,24 +53,24 @@ def kendalls_tau(ideal, candidate):
     print(f"All candidate pairs: {candidate_pairs}")
     print(f"There are {len(agreements)} agreements: {agreements}")
     print(f"There are {len(disagreements)} disagreements: {disagreements}")
-    print(f"Kendall's tau = ({len(agreements)} - {len(disagreements)}) / ({len(agreements)} + {len(disagreements)}) = {result}")
+    print(f"Kendall's tau = ({len(agreements)} - {len(disagreements)}) / ({len(agreements)} + {len(disagreements)}) = {round(result, 3)}\n")
 
     return result
 
 
 def main():
-    # retrieved = [1, 2, 3, 4, 5, 6]
-    # relevant = [1, 3, 5, 7, 9]
-    #
-    # print(fscore(0.5, retrieved, relevant))
-    # print(fscore(1, retrieved, relevant))
-    # print(fscore(1.5, retrieved, relevant))
+    retrieved = [1, 2, 3, 4, 5, 6]
+    relevant = [1, 3, 5, 7, 9]
 
-    ideal = [4, 2, 3, 5, 1]
-    candidate = [5, 4, 2, 3, 1]
+    fscore(0.5, retrieved, relevant)
+    fscore(1, retrieved, relevant)
+    fscore(1.5, retrieved, relevant)
 
-    # ideal = [1, 2, 3, 4, 5, 6]
-    # candidate = [1, 3, 2, 5, 6, 4]
+    # ideal = [4, 2, 3, 5, 1]
+    # candidate = [5, 4, 2, 3, 1]
+
+    ideal = [1, 2, 3, 4, 5, 6]
+    candidate = [2, 3, 4, 5, 1, 6]
 
     kendalls_tau(ideal, candidate)
 

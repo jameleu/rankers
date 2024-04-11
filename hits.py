@@ -48,7 +48,7 @@ def hits(filename, num_iterations):
         print(f"Iteration {iteration}")
 
         for n in all_nodes_sorted:
-            print(f"{n} {new_scores[n]}")
+            print(f"{n}: \t h = {new_scores[n][0]} \t a = {new_scores[n][1]}")
 
         print()
 
