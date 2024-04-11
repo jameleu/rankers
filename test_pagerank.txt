@@ -1,0 +1,9 @@
+a b
+a c
+a e
+b c
+c e
+d a
+d c
+e b
+e d
